@@ -6,12 +6,25 @@
 
 namespace pivot_control_messages
 {
+    //! \brief Structure to define a pivoting movement by euler angles and entrence depth
+    /*! The implementation may define the axis of the rotations and translations.
+     * So one may define the Axes
+     * by the axes of the laparoscope stick or by the direction of the tilted camera
+     */
     struct DOFPose
     {
+        //! rotation angle around x-Axis (Vertical movement in the image)
         double pitch = 0;
+        //! rotation angle around y-Axis (Horizontal movement in the image)
         double yaw = 0;
+        //! rotation angle around z-Axis (rotational movement in the image)
         double roll = 0;
+        //! translation along the z-Axis (zooming the image)
         double transZ = 0;
+        /*!
+         *
+         * @return human readable string
+         */
         std::string toString()
         {
             std::stringstream ss;
@@ -21,6 +34,7 @@ namespace pivot_control_messages
                << " transZ:" << transZ;
             return ss.str();
         }
+        //! \brief exact compare by value
         bool operator==(const DOFPose& other)
         {
             return pitch == other.pitch &&
@@ -29,6 +43,14 @@ namespace pivot_control_messages
                    transZ == other.transZ;
         }
         //TODO: bring this to Eigen
+        //! \brief compare using Epsilon tolerance
+        /*!
+         *
+         * @param other other DOFPose object
+         * @param rotEpsilon Epsilon to be used for the rotational values (pitch,yaw,roll)
+         * @param transZEpsilon Epsilon to be used for the rotational values (pitch,yaw,roll)
+         * @return is close to the other DOFPose object
+         */
         bool closeTo(DOFPose &other, double rotEpsilon, double transZEpsilon)
         {
             double diffPitch = pitch - other.pitch;
@@ -43,6 +65,7 @@ namespace pivot_control_messages
             return  rotDist < rotEpsilon && transZDist < transZEpsilon;
         }
     };
+    //! \brief Structure Defining the Limits the Pivoting can move to at max/min
     struct DOFBoundaries
     {
         double pitchMax = 0;
@@ -60,12 +83,16 @@ namespace pivot_control_messages
         bool mDofPoseReady = false;
         bool mDofBoundariesReady = false;
     public:
+        //! \brief sets the DOFPose the robot is supposed to move to
         virtual bool setTargetDOFPose(
                 DOFPose) = 0;
+        //! \brief gets the DOFPose the robot is currently (inflight) in
         virtual bool getCurrentDOFPose(
                 DOFPose &laparoscopeDofPose) = 0;
+        //! \brief gets the configured/determined Boundaries (DOFPose) the robot can move in
         virtual bool getDOFBoundaries(
                 DOFBoundaries &laparoscopeDofBoundaries) = 0;
+        //! \brief checks if the controller is ready to pivot
         bool isReady() {
             return mDofBoundariesReady && mDofPoseReady;};
     };
