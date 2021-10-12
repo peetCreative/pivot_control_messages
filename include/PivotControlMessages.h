@@ -42,6 +42,11 @@ namespace pivot_control_messages
                    roll == other.roll &&
                    transZ == other.transZ;
         }
+        //! \brief exact compare by value
+        bool operator!=(const DOFPose& other) const
+        {
+            return !this->operator==(other);
+        }
         //TODO: bring this to Eigen
         //! \brief compare using Epsilon tolerance
         /*!
@@ -76,6 +81,18 @@ namespace pivot_control_messages
         double rollMin = 0;
         double transZMax = 0;
         double transZMin = 0;
+
+        bool poseInside(DOFPose pose) const
+        {
+            return pose.pitch >= this->pitchMin &&
+                pose.pitch <= this->pitchMax &&
+                pose.yaw >= this->yawMin &&
+                pose.yaw <= this->yawMax &&
+                pose.roll >= this->rollMin &&
+                pose.roll <= this->rollMax &&
+                pose.transZ >= this->transZMin &&
+                pose.transZ <= this->transZMax;
+        }
     };
 
     class PivotController {
