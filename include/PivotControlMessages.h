@@ -2,7 +2,7 @@
 #define PIVOT_CONTROL_MESSAGES_H
 
 #include <sstream>
-#include <math.h>
+#include <cmath>
 
 namespace pivot_control_messages
 {
@@ -25,7 +25,7 @@ namespace pivot_control_messages
          *
          * @return human readable string
          */
-        std::string toString()
+        std::string toString() const
         {
             std::stringstream ss;
             ss << "pitch:" << pitch
@@ -35,7 +35,7 @@ namespace pivot_control_messages
             return ss.str();
         }
         //! \brief exact compare by value
-        bool operator==(const DOFPose& other)
+        bool operator==(const DOFPose& other) const
         {
             return pitch == other.pitch &&
                    yaw == other.yaw &&
@@ -56,7 +56,7 @@ namespace pivot_control_messages
          * @param transZEpsilon Epsilon to be used for the rotational values (pitch,yaw,roll)
          * @return is close to the other DOFPose object
          */
-        bool closeTo(DOFPose &other, double rotEpsilon, double transZEpsilon)
+        bool closeTo(DOFPose &other, double rotEpsilon, double transZEpsilon) const
         {
             double diffPitch = pitch - other.pitch;
             double diffYaw = yaw - other.yaw;
@@ -110,7 +110,7 @@ namespace pivot_control_messages
         virtual bool getDOFBoundaries(
                 DOFBoundaries &laparoscopeDofBoundaries) = 0;
         //! \brief checks if the controller is ready to pivot
-        bool isReady() {
+        bool isReady() const {
             return mDofBoundariesReady && mDofPoseReady;};
     };
 }
