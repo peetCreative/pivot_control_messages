@@ -28,6 +28,7 @@ namespace pivot_control_messages
         std::string toString() const
         {
             std::stringstream ss;
+            ss.precision(3);
             ss << "pitch:" << pitch
                << " yaw:" << yaw
                << " roll:" << roll
@@ -69,6 +70,33 @@ namespace pivot_control_messages
             double transZDist = std::abs(diffTransZ);
             return  rotDist < rotEpsilon && transZDist < transZEpsilon;
         }
+
+        /*! calcs the roll difference to another DOFPose
+         *
+         * @param other
+         * @return eukledian distance of the pitch yaw roll
+         */
+        double rollDiff(DOFPose &other)
+        {
+            double diffPitch = pitch - other.pitch;
+            double diffYaw = yaw - other.yaw;
+            double diffRoll = roll - other.roll;
+            return std::sqrt(
+                    diffPitch * diffPitch +
+                    diffYaw * diffYaw +
+                    diffRoll * diffRoll);
+        }
+
+        /*! Distance between TransZ values of the other DOFPose
+         *
+         * @param other
+         * @return absolute Difference of transZ
+         */
+        double transZDiff(DOFPose &other)
+        {
+            return std::abs(transZ - other.transZ);
+        }
+
     };
     //! \brief Structure Defining the Limits the Pivoting can move to at max/min
     struct DOFBoundaries
